@@ -7,6 +7,7 @@ import com.sparta.reviewservice.repository.ProductRepository;
 import com.sparta.reviewservice.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @org.springframework.stereotype.Service
@@ -18,7 +19,7 @@ public class Service {
     private final ProductRepository productRepository;
 
     @Transactional
-    public void createReviews(RequestDto requestDto, Long productId) {
+    public void createReviews(RequestDto requestDto, Long productId, MultipartFile file) {
 
         //Product 만들어줌
         // Product가 DB에 존재하는지 확인
@@ -51,6 +52,17 @@ public class Service {
         //리뷰 만들어줌
         Review review = new Review(requestDto);
         review.setProduct(product);
+
+        // 이미지 파일이 있을 경우 처리
+        //!file.isEmpty() 전송 되었는데 파일크기가 0인 경우
+        if (file != null && !file.isEmpty()) {
+            // 실제로는 S3 서비스로 이미지를 업로드한 후 반환된 URL을 사용합니다.
+            review.setImageUrl(file.getOriginalFilename());
+        } else {
+            review.setImageUrl(null); // 이미지가 없으면 null로 설정
+        }
+
+
 
         reviewRepository.save(review);
 

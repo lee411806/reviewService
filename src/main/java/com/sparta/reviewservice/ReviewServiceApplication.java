@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@EnableJpaAuditing
+@EnableJpaAuditing //@CreatedDate 찾아서 알아서 실행시킨다.
 @SpringBootApplication
 public class ReviewServiceApplication {
 

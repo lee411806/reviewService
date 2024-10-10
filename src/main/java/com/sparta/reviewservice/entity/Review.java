@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "Review")
-public class Review {
+public class Review extends Timestamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,8 +34,8 @@ public class Review {
     private String content;
 
     // 선택적 이미지 URL 필드
-//    @Column(nullable = true)
-//    private String imageUrl;
+    @Column(nullable = true)
+    private String imageUrl;
 
 
     public Review(RequestDto requestDto) {
