@@ -2,6 +2,7 @@ package com.sparta.reviewservice.controller;
 
 import com.sparta.reviewservice.dto.RequestDto;
 import com.sparta.reviewservice.service.Service;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,20 +13,13 @@ public class Controller {
 
     private final Service service;
 
+    //requestbody로 json데이터 dto로 변환할때 spring이 자동으로 setter적용시켜서 dto에 값을 넣어줌
     @PostMapping("/{productId}/reviews")
-    public void createReview(@PathVariable Long productId, @RequestBody RequestDto requestDto) {
-
+    public void createReview(@PathVariable Long productId, @Valid @RequestBody RequestDto requestDto) {
+        service.createReviews(requestDto, productId);
     }
 
 
-//    @GetMapping("/{productId}/reviews")
-//    public List<ReviewResponseDto> getProductReviews(
-//            @PathVariable Long productId,  // 경로 변수로 productId 받기
-//            @RequestParam(required = false) Long cursor,  // 쿼리 파라미터로 cursor 받기
-//            @RequestParam(defaultValue = "10") int size  // 쿼리 파라미터로 size 받기, 기본값 10
-//    ) {
-//        return service.getProductReviews(productId, cursor, size);
-//    }
 
 
 }
