@@ -10,7 +10,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "Review")
+//UniqueConstraint : productId와 userId이 고유하다.
+//단 유니크 조건 중복시 DataIntegrityViolationException 예외
+@Table(name = "Review", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"productId", "userId"})
+})
 public class Review extends Timestamped{
 
     @Id
