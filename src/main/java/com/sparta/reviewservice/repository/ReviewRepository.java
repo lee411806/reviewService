@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends CrudRepository<Review, Long> {
 
+
     int countByProductId(Long productId);
 
     @Query("SELECT AVG(r.score) FROM Review r WHERE r.product.id = :productId")
@@ -22,26 +23,5 @@ public interface ReviewRepository extends CrudRepository<Review, Long> {
 
     List<Review> findByProductIdAndIdLessThanEqualOrderByIdDesc(Long productId, Long cursor, Pageable pageable);
 
-
-
-
-
-    /*
-    * SELECT *
-        FROM review
-        WHERE product_id = {productId}
-        ORDER BY created_at DESC
-        LIMIT {size};
-*/
-
-
-    /*
-    * SELECT *
-        FROM review
-        WHERE product_id = {productId}
-        AND id < {cursor}
-        ORDER BY created_at DESC
-        LIMIT {size};
-*/
 
 }

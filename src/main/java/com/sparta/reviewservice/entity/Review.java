@@ -15,6 +15,14 @@ import lombok.Setter;
 @Table(name = "Review", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"productId", "userId"})
 })
+//인덱스테이블 추가
+//@Table(name = "Review",
+//        uniqueConstraints = {
+//                @UniqueConstraint(columnNames = {"productId", "userId"})
+//        },
+//        indexes = {
+//                @Index(name = "idx_product_id_id", columnList = "productId, id")
+//        })
 public class Review extends Timestamped{
 
     @Id
@@ -41,6 +49,8 @@ public class Review extends Timestamped{
     @Column(nullable = true)
     private String imageUrl;
 
+    @Version  // 낙관적 락을 위한 버전 필드
+    private int version;
 
     public Review(RequestDto requestDto) {
         this.userId = requestDto.getUserId();

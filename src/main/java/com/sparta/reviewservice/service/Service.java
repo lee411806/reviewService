@@ -31,7 +31,8 @@ public class Service {
 
         //Product 만들어줌
         // Product가 DB에 존재하는지 확인
-        Product product = productRepository.findById(productId)
+        // productId를 찾고와서 product수정하면서 아래 리뷰도 생성함으로 엔티티 두개 하나의 트랜잭션에 동시에 사용
+        Product product = productRepository.findByIdForUpdate(productId)
                 .orElseGet(() -> {
                     Product newProduct = new Product();
                     newProduct.setId(productId);
@@ -77,7 +78,7 @@ public class Service {
             // 리뷰 저장
             reviewRepository.save(review);
         } catch (DataIntegrityViolationException e) {
-            // 중복된 리뷰가 있을 때 예외 처리 (entity에 productid랑 userid 유니크 처리해준 에러처리)
+            // 한명의 유저가 하나의 상품에 중복된 리뷰가 있을 때 예외 처리 (entity에 productid랑 userid 유니크 처리해준 에러처리)
             // 중복 예외 발생 시 로그 확인
             System.out.println("예외 발생: 이미 리뷰가 존재합니다.");
             throw new IllegalStateException("이미 해당 상품에 대한 리뷰를 작성했습니다.", e);
@@ -87,6 +88,10 @@ public class Service {
 
     @Transactional
     public ReviewResponseDto getReviews(Long productId, Long cursor, int size) {
+
+        // 성능 측정 시작 시간
+        long startTime = System.currentTimeMillis();
+
         // 1. 리뷰 총 개수 조회
         int totalCount = reviewRepository.countByProductId(productId);
 
@@ -101,6 +106,11 @@ public class Service {
             reviews = reviewRepository.findReviewsByProductIdWithLimit(productId, size);
             System.out.println("cursor에 Null값이 들어오고 메서드가 잘 실행이 되었다: " + cursor);
         } else {
+            //cursor보다 pageable의 size크기보다 작으면 조회할 목록이 없음으로 예외처리
+            if (cursor < pageable.getPageSize()) {
+                throw new IllegalArgumentException("리뷰를 더 이상 조회할 수 없습니다.");
+            }
+
             // 커서 기반으로 페이징
             reviews = reviewRepository.findByProductIdAndIdLessThanEqualOrderByIdDesc(productId, cursor, pageable);
             System.out.println("cursor가 Null이 아니고 잘 실행이 되었다: " + cursor);
@@ -127,6 +137,19 @@ public class Service {
         responseDto.setScore(score);
         responseDto.setCursor(nextCursor);
         responseDto.setReviews(reviewDtos);
+
+        // 성능 측정 종료 시간
+        long endTime = System.currentTimeMillis();
+        long elapsedTime = endTime - startTime;
+
+        // 성능 결과 출력
+        System.out.println("쿼리 실행 시간: " + elapsedTime + "ms");
+        /*
+
+        cursor, size 7,5 : 82ms indextable
+
+
+         */
 
         return responseDto;
     }

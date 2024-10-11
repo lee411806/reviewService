@@ -16,7 +16,7 @@ public class ReviewServiceTest {
    /* @Test
     public void testReviewQueryPerformance() {
         Long productId = 1L; // 테스트할 productId
-        Long cursor = null;  // 첫 페이지
+        Long cursor = 6L;  // 첫 페이지
         int size = 10;       // 페이징 크기
 
         // 성능 테스트 - 쿼리 실행 시간 측정
@@ -26,7 +26,7 @@ public class ReviewServiceTest {
         long elapsedTime = endTime - startTime;
 
         System.out.println("쿼리 실행 시간: " + elapsedTime + "ms");
-
+        //일반 179ms ,, 인덱스 테이블 145ms
     }*/
 }
 
